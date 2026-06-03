@@ -15,6 +15,7 @@ export default function Home() {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
+  const [user, setUser] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
   const [message, setMessage] = useState('');
 
@@ -25,13 +26,27 @@ export default function Home() {
   );
 
   useEffect(() => {
+    fetch('/api/auth/me')
+      .then((res) => res.json())
+      .then((json) => setUser(json.user || null))
+      .catch(() => setUser(null));
+
     fetch(`/api/products?search=${encodeURIComponent(search)}&category=${encodeURIComponent(category)}`)
       .then((res) => res.json())
-      .then(setProducts)
+      .then((data) => {
+        setProducts(data || []);
+        const cats = [...new Set((data || []).map((p) => p.category))];
+        if (category && !cats.includes(category)) setCategory('');
+      })
       .catch(() => setProducts([]));
-  }, [search, category]);
+  }, [search]);
 
   function addProduct(product) {
+    if (!user) {
+      setMessage('Please sign in to add products to a quotation.');
+      return;
+    }
+
     setSelectedItems((current) => {
       const existing = current.find((item) => item.productId === product.id);
       if (existing) return current;
@@ -53,6 +68,11 @@ export default function Home() {
   }
 
   async function submitOrder(isQuotation) {
+    if (!user) {
+      setMessage('Please sign in to place quotations or orders.');
+      return;
+    }
+
     if (selectedItems.length === 0) {
       setMessage('Select at least one product to continue.');
       return;
@@ -104,7 +124,7 @@ export default function Home() {
 
       <div className="grid grid-3" style={{ marginBottom: '24px' }}>
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} onSelect={addProduct} />
+          <ProductCard key={product.id} product={product} onSelect={addProduct} user={user} />
         ))}
       </div>
 

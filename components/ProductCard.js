@@ -1,6 +1,6 @@
 import { formatAmount, fromBase, getUnitDisplay } from '../lib/units';
 
-export default function ProductCard({ product, onSelect }) {
+export default function ProductCard({ product, onSelect, user }) {
   const basePrice = formatAmount(product.pricePerBase);
   const inventoryBase = Number(product.inventoryBase);
   const inventoryDisplay = `${fromBase(inventoryBase, product.baseUnit).toFixed(3)} ${getUnitDisplay(product.baseUnit)}`;
@@ -21,7 +21,13 @@ export default function ProductCard({ product, onSelect }) {
       <p>
         <strong>Inventory:</strong> {inventoryDisplay}
       </p>
-      <button type="button" className="button" onClick={() => onSelect(product)}>
+      <button
+        type="button"
+        className="button"
+        onClick={() => onSelect(product)}
+        disabled={!user}
+        title={!user ? 'Sign in to add to quotation' : ''}
+      >
         Add to quote
       </button>
     </div>

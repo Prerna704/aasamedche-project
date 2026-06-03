@@ -45,6 +45,16 @@ select {
   margin-top: 0;
 }
 
+.header h1 {
+  font-size: 1.8rem;
+  margin: 0 0 6px 0;
+}
+
+.header p {
+  margin: 0;
+  color: #374151;
+}
+
 input,
 select,
 textarea {
@@ -87,6 +97,13 @@ button:hover {
 
 .button.secondary:hover {
   background: #d1d5db;
+}
+
+.button:disabled {
+  opacity: 0.56;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .header {
