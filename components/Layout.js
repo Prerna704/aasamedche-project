@@ -6,7 +6,7 @@ export default function Layout({ children }) {
   const [theme, setTheme] = useState('light');
 
   useEffect(() => {
-    fetch('/api/auth/me')
+    fetch('/api/auth/me', { credentials: 'include' })
       .then((res) => res.json())
       .then((json) => {
         if (json.user) setUser(json.user);
@@ -35,7 +35,7 @@ export default function Layout({ children }) {
   }
 
   async function handleLogout() {
-    await fetch('/api/auth/logout', { method: 'POST' });
+    await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
     setUser(null);
     window.location.href = '/login';
   }

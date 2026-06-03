@@ -26,7 +26,7 @@ export default function Home() {
   );
 
   useEffect(() => {
-    fetch('/api/auth/me')
+    fetch('/api/auth/me', { credentials: 'include' })
       .then((res) => res.json())
       .then((json) => setUser(json.user || null))
       .catch(() => setUser(null));
